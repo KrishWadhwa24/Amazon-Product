@@ -39,7 +39,6 @@ from decimal import Decimal
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from app.core.errors import ForbiddenError, OfferUnavailableError
 from app.models.analytics_counter import AnalyticsCounter
@@ -155,22 +154,14 @@ async def accept_match(
     )
 
     # --- Feature 3: Record logistics savings (10% of product price) ---
-    # Load the product for this return to read its price.
-    # We use a targeted query rather than an extra eager-load on the caller so
-    # the API layer doesn't need changing.
-    return_order_with_product = (
-        await session.execute(
-            select(ReturnOrder)
-            .where(ReturnOrder.id == return_order.id)
-            .options(selectinload(ReturnOrder.product))
-        )
-    ).scalar_one_or_none()
-
-    if return_order_with_product is not None and return_order_with_product.product is not None:
-        product_price = Decimal(str(return_order_with_product.product.price))
-        savings = (product_price * LOGISTICS_SAVINGS_RATE).to_integral_value()
-        savings_paise = int(savings)  # already in rupees — store as paise (×100)
-        savings_paise_full = int((product_price * LOGISTICS_SAVINGS_RATE * 100).to_integral_value())
+    # The product is already eager-loaded on the return_order (via the API
+    # layer's _load_candidate which does selectinload on return_order.product),
+    # so we use it directly instead of issuing a second SELECT.
+    product = return_order.product
+    if product is not None:
+        product_price = Decimal(str(product.price))
+        # savings in paise (₹×100) — store as integer to match the counter schema.
+        savings_paise = int((product_price * LOGISTICS_SAVINGS_RATE * 100).to_integral_value())
 
         savings_counter = (
             await session.execute(
@@ -182,10 +173,10 @@ async def accept_match(
 
         if savings_counter is None:
             session.add(
-                AnalyticsCounter(name=LOGISTICS_SAVINGS_COUNTER, value=savings_paise_full)
+                AnalyticsCounter(name=LOGISTICS_SAVINGS_COUNTER, value=savings_paise)
             )
         else:
-            savings_counter.value = savings_counter.value + savings_paise_full
+            savings_counter.value = savings_counter.value + savings_paise
 
     await session.commit()
     await session.refresh(candidate)

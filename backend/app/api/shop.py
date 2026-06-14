@@ -371,8 +371,8 @@ async def add_to_cart(
 
 @router.delete(
     "/cart",
-    status_code=status.HTTP_204_NO_CONTENT,
-    summary="Clear all cart items for the active buyer",
+    status_code=status.HTTP_200_OK,
+    summary="Clear all cart items for the active buyer (marks resale listings SOLD)",
 )
 async def clear_cart(
     buyer_id: int = Depends(require_current_user_id),
@@ -381,10 +381,40 @@ async def clear_cart(
     """Delete every CartItem row belonging to the active buyer.
 
     Called by the frontend immediately after an order is placed so the cart is
-    emptied. Returns ``204 No Content`` on success.
+    emptied. Before deleting, any ResaleListing referenced by a cart item is
+    marked SOLD so the resale commission counter stays accurate — buying via
+    cart checkout is equivalent to buying via the Buy Now button.
+    Returns 200 on success.
     """
-    from sqlalchemy import delete as sql_delete
+    from sqlalchemy import delete as sql_delete, update as sql_update
+    from app.models.resale_listing import ResaleListing
+    from app.models.enums import ResaleStatus
 
+    # Load the buyer's cart items to find any resale listing references.
+    items = (
+        await session.execute(
+            select(CartItem).where(CartItem.user_id == buyer_id)
+        )
+    ).scalars().all()
+
+    # Collect IDs of ACTIVE resale listings in the cart and mark them SOLD.
+    resale_ids = [
+        item.resale_listing_id
+        for item in items
+        if item.resale_listing_id is not None
+    ]
+    if resale_ids:
+        await session.execute(
+            sql_update(ResaleListing)
+            .where(
+                ResaleListing.id.in_(resale_ids),
+                ResaleListing.status == ResaleStatus.ACTIVE,
+            )
+            .values(status=ResaleStatus.SOLD)
+            .execution_options(synchronize_session=False)
+        )
+
+    # Now delete the cart items.
     await session.execute(
         sql_delete(CartItem).where(CartItem.user_id == buyer_id)
     )

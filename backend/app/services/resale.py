@@ -277,6 +277,39 @@ async def buy_listing(
     return listing
 
 
+async def remove_listing(
+    session: AsyncSession,
+    *,
+    listing_id: int,
+    seller_id: int,
+) -> ResaleListing:
+    """Remove an ACTIVE resale listing, marking it REMOVED.
+
+    Loads the listing (404 when unknown). Raises :class:`ForbiddenError` (403)
+    when the requesting user is not the seller. Raises
+    :class:`ResaleListingUnavailableError` (409) when the listing is already
+    SOLD or REMOVED. On success marks the listing REMOVED and commits so it
+    disappears from the marketplace feed immediately.
+    """
+    stmt = (
+        select(ResaleListing)
+        .where(ResaleListing.id == listing_id)
+        .options(selectinload(ResaleListing.product))
+    )
+    listing = (await session.execute(stmt)).scalar_one_or_none()
+    if listing is None:
+        raise ResaleListingNotFoundError(listing_id)
+    if listing.seller_id != seller_id:
+        raise ForbiddenError("You can only remove your own resale listings.")
+    if listing.status != ResaleStatus.ACTIVE:
+        raise ResaleListingUnavailableError()
+
+    listing.status = ResaleStatus.REMOVED
+    await session.commit()
+    await session.refresh(listing)
+    return listing
+
+
 async def add_listing_to_cart(
     session: AsyncSession,
     *,
