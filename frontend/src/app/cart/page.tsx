@@ -107,9 +107,13 @@ export default function CartPage() {
     );
   }
 
-  const subtotal = items.reduce((sum, item) => sum + item.product.price, 0);
+  const subtotal = items.reduce(
+    (sum, item) => sum + Number(item.product.price),
+    0,
+  );
   const openBoxDiscount = items.reduce(
-    (sum, item) => sum + Math.max(0, item.product.price - cartLinePrice(item)),
+    (sum, item) =>
+      sum + Math.max(0, Number(item.product.price) - cartLinePrice(item)),
     0,
   );
   const claimedDealDiscount = user
@@ -175,7 +179,6 @@ export default function CartPage() {
                   {item.resale_listing_id ? (
                     <p className="mt-1 inline-flex items-center gap-1 rounded border border-amber-600 bg-amber-50 px-2 py-0.5 text-xs font-bold text-amber-700">
                       Open-box deal
-                      {item.condition_grade ? ` · ${item.condition_grade}` : ""}
                     </p>
                   ) : null}
                   {claimedDealAsins.has(item.product.asin) ? (
@@ -202,7 +205,7 @@ export default function CartPage() {
                   <div key={item.id} className="flex justify-between gap-3">
                     <dt className="min-w-0 truncate">{item.product.name}</dt>
                     <dd className="shrink-0 font-medium">
-                      {inr.format(item.product.price)}
+                      {inr.format(Number(item.product.price))}
                     </dd>
                   </div>
                 ))}

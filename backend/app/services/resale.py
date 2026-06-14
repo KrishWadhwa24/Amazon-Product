@@ -6,6 +6,13 @@ are produced by the frontend's mock scan (Requirement 11.5) and supplied to
 :func:`create_listing`, which validates them and persists an ACTIVE
 :class:`ResaleListing`.
 
+A flat ₹50 **Amazon Commission** is added on top of every resale listing's
+``resale_price``. The ``resale_price`` column stores the seller's base price
+(validated ``0 < base_price <= product.price``); the buyer-facing total
+``base_price + RESALE_COMMISSION`` is returned in the API response alongside
+the base price so frontends can show the breakdown. The commission is also
+accumulated into the admin profit tracker via ``GET /api/admin/metrics``.
+
 Validation rules (all reject without creating a listing):
 
 * The referenced :class:`OrderHistory` must exist **and belong to the requesting
@@ -16,11 +23,6 @@ Validation rules (all reject without creating a listing):
   (Requirements 11.6, 11.7), else :class:`MissingImageError`.
 * ``resale_price`` must satisfy ``0 < resale_price <= product.price``
   (Requirement 11.2), else :class:`InvalidResalePriceError`.
-
-Design choice for an out-of-range price: we **reject** with
-:class:`InvalidResalePriceError` (422) rather than clamping, so the caller is
-told their price was invalid instead of silently changing it (per the task's
-"reject with a validation error is fine").
 
 On success the ResaleListing is created with ``status=ACTIVE``, the provided
 grade/image, and ``listed_at`` set to the current server time (Requirement
@@ -53,6 +55,9 @@ from app.models.order_history import OrderHistory
 from app.models.resale_listing import ResaleListing
 from app.models.enums import ResaleStatus
 
+#: Flat Amazon commission added to every resale listing price (₹50).
+RESALE_COMMISSION: Decimal = Decimal("50.00")
+
 
 @dataclass(frozen=True)
 class ResaleFeedItem:
@@ -63,10 +68,17 @@ class ResaleFeedItem:
     Product ``image_url`` and the listing's ``condition_image_url`` without an
     extra query (Requirement 12.7). ``original_purchased_at`` is the
     ``purchased_at`` of the originating :class:`OrderHistory` (Requirement 12.1).
+    ``buyer_total_price`` is ``listing.resale_price + RESALE_COMMISSION`` — the
+    final price shown to the buyer.
     """
 
     listing: ResaleListing
     original_purchased_at: datetime
+
+    @property
+    def buyer_total_price(self) -> Decimal:
+        """Return the buyer-facing price: base resale price + ₹50 commission."""
+        return self.listing.resale_price + RESALE_COMMISSION
 
 
 def _utcnow() -> datetime:
@@ -106,6 +118,19 @@ def _coerce_resale_price(resale_price: object, product_price: Decimal) -> Decima
     return price
 
 
+@dataclass(frozen=True)
+class CreateListingResult:
+    """Outcome of :func:`create_listing`.
+
+    ``listing`` is the persisted :class:`ResaleListing`.
+    ``buyer_total_price`` is ``listing.resale_price + RESALE_COMMISSION`` — the
+    final price shown to the buyer including the ₹50 Amazon Commission.
+    """
+
+    listing: ResaleListing
+    buyer_total_price: Decimal
+
+
 async def create_listing(
     session: AsyncSession,
     *,
@@ -115,11 +140,12 @@ async def create_listing(
     condition_image_url: object,
     resale_price: object,
     now: datetime | None = None,
-) -> ResaleListing:
+) -> CreateListingResult:
     """Create an ACTIVE ResaleListing for ``order_history_id`` (Requirement 11).
 
-    See the module docstring for the full validation contract. Returns the
-    persisted :class:`ResaleListing` on success.
+    See the module docstring for the full validation contract. Returns a
+    :class:`CreateListingResult` on success carrying the persisted listing and
+    the buyer-facing total price (``resale_price + ₹50 commission``).
     """
     moment = now or _utcnow()
 
@@ -161,7 +187,10 @@ async def create_listing(
     session.add(listing)
     await session.commit()
     await session.refresh(listing)
-    return listing
+    return CreateListingResult(
+        listing=listing,
+        buyer_total_price=(price + RESALE_COMMISSION).quantize(Decimal("0.01")),
+    )
 
 
 async def list_active_feed(session: AsyncSession) -> list[ResaleFeedItem]:

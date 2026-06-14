@@ -405,3 +405,18 @@ class StoreUnavailableError(DomainError):
         ),
     ) -> None:
         super().__init__(message)
+
+
+class ReturnNotFoundError(DomainError):
+    """Raised when an admin cache action references an unknown ReturnOrder id.
+
+    Maps to ``404`` with code ``RETURN_NOT_FOUND``. The offending id is retained
+    for diagnostics.
+    """
+
+    code = "RETURN_NOT_FOUND"
+    http_status = 404
+
+    def __init__(self, return_order_id: object = None) -> None:
+        self.return_order_id = return_order_id
+        super().__init__(f"No return order found for id {return_order_id!r}.")

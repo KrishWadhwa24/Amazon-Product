@@ -26,6 +26,8 @@ import { useCallback, useEffect, useState } from "react";
 import { LayoutDashboard } from "lucide-react";
 
 import { KPIGrid, type AdminMetrics } from "@/components/admin/KPIGrid";
+import { CachePanel, type CacheAddApiResponse, type CacheDispatchApiResponse } from "@/components/admin/CachePanel";
+import { NgoDispatchButton, type NgoDispatchApiResponse } from "@/components/admin/NgoDispatchButton";
 import { DispatchButton } from "@/components/admin/DispatchButton";
 import {
   OperationsDataTable,
@@ -117,6 +119,38 @@ export default function AdminOperationsPage() {
     [loadReturns, statusFilter],
   );
 
+  // After adding a return to cache: patch the cache_used/cache_total in the
+  // existing metrics so the KPI card updates without a full refetch.
+  const handleCacheAdded = useCallback((result: CacheAddApiResponse) => {
+    setMetrics((prev) =>
+      prev
+        ? { ...prev, cache_used: result.cache_used, cache_total: result.cache_total }
+        : prev,
+    );
+    loadReturns(statusFilter);
+  }, [loadReturns, statusFilter]);
+
+  // After dispatching cache to FC: apply the full recalculated metrics and
+  // refresh the returns table.
+  const handleCacheDispatched = useCallback(
+    (result: CacheDispatchApiResponse) => {
+      setMetrics(result.metrics);
+      loadReturns(statusFilter);
+    },
+    [loadReturns, statusFilter],
+  );
+
+  // After dispatching a return to NGO: apply the recalculated metrics (which
+  // now includes the accrued tax credit) and refresh the returns table so the
+  // dispatched NGO_ROUTING row disappears from the NGO_QUEUED view.
+  const handleNgoDispatched = useCallback(
+    (result: NgoDispatchApiResponse) => {
+      setMetrics(result.metrics);
+      loadReturns(statusFilter);
+    },
+    [loadReturns, statusFilter],
+  );
+
   return (
     // Full-bleed dark override of the light root layout (Req 17.3).
     // `-mx-4 -my-6` cancels the <main> padding; `min-h-screen` fills the area.
@@ -153,6 +187,19 @@ export default function AdminOperationsPage() {
           ) : metrics ? (
             <KPIGrid metrics={metrics} />
           ) : null}
+        </section>
+
+        {/* Action panels — Cache management + NGO dispatch */}
+        <section className="mt-6 space-y-3" aria-label="Admin actions">
+          <CachePanel
+            disabled={loading}
+            onCacheAdded={handleCacheAdded}
+            onCacheDispatched={handleCacheDispatched}
+          />
+          <NgoDispatchButton
+            disabled={loading}
+            onDispatched={handleNgoDispatched}
+          />
         </section>
 
         {/* Active returns operations table with status filter (Req 14, 15). */}
