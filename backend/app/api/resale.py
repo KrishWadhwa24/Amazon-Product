@@ -219,6 +219,36 @@ class AddResaleToCartResponse(BaseModel):
     product: CartLineProduct
 
 
+class RemoveListingResponse(BaseModel):
+    """``200`` response after removing a resale listing."""
+
+    id: int
+    status: ResaleStatus
+
+
+@router.delete(
+    "/{listing_id}",
+    response_model=RemoveListingResponse,
+    summary="Remove an ACTIVE resale listing from the marketplace",
+)
+async def remove_listing(
+    listing_id: int,
+    seller_id: int = Depends(require_current_user_id),
+    session: AsyncSession = Depends(get_session),
+) -> RemoveListingResponse:
+    """Remove an ACTIVE resale listing owned by the requesting seller.
+
+    Requires an authenticated session (``401`` otherwise). Raises ``404`` for an
+    unknown id, ``403`` when the caller is not the listing's seller, and ``409``
+    when the listing is already SOLD or REMOVED. On success marks the listing
+    REMOVED so it disappears from the marketplace feed immediately.
+    """
+    listing = await resale_service.remove_listing(
+        session, listing_id=listing_id, seller_id=seller_id
+    )
+    return RemoveListingResponse(id=listing.id, status=listing.status)
+
+
 @router.post(
     "/{listing_id}/buy",
     response_model=BuyListingResponse,

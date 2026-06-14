@@ -85,16 +85,7 @@ async def initiate_return(
 
 
 class SellerOrderResource(BaseModel):
-    """A seller's order joined with its Product plus resale gating.
-
-    Shape consumed by the ``/orders`` page and the return/resale flows: the
-    source ``order_history_id``, the product ``asin``/``name``/``price`` and both
-    image fields (``uploaded_image_path`` is ``null`` until a real photo is
-    uploaded, so the UI falls back to ``image_url``/placeholder), the
-    ``purchased_at`` timestamp, a computed ``days_since_purchase``, and the
-    ``resell_eligible`` flag — ``true`` when the purchase is more than 7 days old
-    (Requirement 11.1).
-    """
+    """A seller's order joined with its Product plus resale gating."""
 
     order_history_id: int
     asin: str
@@ -107,6 +98,8 @@ class SellerOrderResource(BaseModel):
     resell_eligible: bool
     return_eligible: bool
     return_status: ReturnStatus | None = None
+    resale_listing_id: int | None = None
+    resale_status: str | None = None
 
 
 class SellerOrdersResponse(BaseModel):
@@ -148,6 +141,8 @@ async def list_orders(
                 resell_eligible=o.resell_eligible,
                 return_eligible=o.return_eligible,
                 return_status=o.return_status,
+                resale_listing_id=o.resale_listing_id,
+                resale_status=o.resale_status,
             )
             for o in orders
         ]

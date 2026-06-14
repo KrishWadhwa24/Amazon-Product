@@ -21,6 +21,7 @@ from app.api.deps import require_current_user_id
 from app.db.session import get_session
 from app.models.enums import MatchStatus
 from app.models.match_candidate import MatchCandidate
+from app.models.return_order import ReturnOrder
 from app.services import matches as matches_service
 
 router = APIRouter(prefix="/api/matches", tags=["matches"])
@@ -36,16 +37,19 @@ class MatchActionResponse(BaseModel):
 async def _load_candidate(
     session: AsyncSession, match_id: int
 ) -> MatchCandidate | None:
-    """Load a MatchCandidate by id with its ReturnOrder eagerly loaded.
+    """Load a MatchCandidate by id with its ReturnOrder and Product eagerly loaded.
 
     The ``return_order`` relationship is needed by the accept cascade (advancing
-    the lifecycle), so it is eager-loaded to avoid a lazy load on the async
-    session.
+    the lifecycle), and ``return_order.product`` is needed to compute the
+    logistics savings (Feature 3 — 10% of product price). Both are eager-loaded
+    upfront to guarantee availability in the service layer without a second query.
     """
     stmt = (
         select(MatchCandidate)
         .where(MatchCandidate.id == match_id)
-        .options(selectinload(MatchCandidate.return_order))
+        .options(
+            selectinload(MatchCandidate.return_order).selectinload(ReturnOrder.product)
+        )
     )
     return (await session.execute(stmt)).scalar_one_or_none()
 

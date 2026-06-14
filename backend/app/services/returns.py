@@ -26,6 +26,7 @@ from sqlalchemy.orm import selectinload
 from app.core.errors import AuthError, NotEligibleError
 from app.models.enums import ReturnStatus
 from app.models.order_history import OrderHistory
+from app.models.resale_listing import ResaleListing
 from app.models.return_order import ReturnOrder
 
 #: Length of the Return_Window in seconds — exactly 48 hours (Requirement 3.1).
@@ -75,6 +76,8 @@ class SellerOrder:
         "resell_eligible",
         "return_eligible",
         "return_status",
+        "resale_listing_id",
+        "resale_status",
     )
 
     def __init__(
@@ -91,6 +94,8 @@ class SellerOrder:
         resell_eligible: bool,
         return_eligible: bool,
         return_status: ReturnStatus | None = None,
+        resale_listing_id: int | None = None,
+        resale_status: str | None = None,
     ) -> None:
         self.order_history_id = order_history_id
         self.asin = asin
@@ -103,6 +108,8 @@ class SellerOrder:
         self.resell_eligible = resell_eligible
         self.return_eligible = return_eligible
         self.return_status = return_status
+        self.resale_listing_id = resale_listing_id
+        self.resale_status = resale_status
 
 
 async def list_seller_orders(
@@ -131,6 +138,7 @@ async def list_seller_orders(
     rows = (await session.execute(stmt)).scalars().all()
     order_ids = [order.id for order in rows]
     return_status_by_order_id: dict[int, ReturnStatus] = {}
+    resale_by_order_id: dict[int, tuple[int, str]] = {}  # order_id -> (listing_id, status)
     if order_ids:
         return_rows = (
             (
@@ -147,6 +155,25 @@ async def list_seller_orders(
             return_status_by_order_id.setdefault(
                 return_order.order_history_id, return_order.status
             )
+
+        # Load the most recent resale listing per order (prefer ACTIVE over SOLD/REMOVED).
+        resale_rows = (
+            (
+                await session.execute(
+                    select(ResaleListing)
+                    .where(ResaleListing.order_history_id.in_(order_ids))
+                    .order_by(ResaleListing.listed_at.desc(), ResaleListing.id.desc())
+                )
+            )
+            .scalars()
+            .all()
+        )
+        for rl in resale_rows:
+            oid = rl.order_history_id
+            # Prefer ACTIVE listing; only fall back to SOLD/REMOVED if no ACTIVE exists.
+            existing = resale_by_order_id.get(oid)
+            if existing is None or rl.status.value == "ACTIVE":
+                resale_by_order_id[oid] = (rl.id, rl.status.value)
 
     orders: list[SellerOrder] = []
     for order in rows:
@@ -171,6 +198,8 @@ async def list_seller_orders(
                 resell_eligible=resell_eligible,
                 return_eligible=return_eligible,
                 return_status=return_status_by_order_id.get(order.id),
+                resale_listing_id=resale_by_order_id.get(order.id, (None, None))[0],
+                resale_status=resale_by_order_id.get(order.id, (None, None))[1],
             )
         )
     return orders

@@ -63,6 +63,10 @@ export interface SellerOrder {
   return_eligible: boolean;
   /** Persisted ReturnOrder status when this purchase already has a return. */
   return_status?: string | null;
+  /** ID of an existing resale listing for this order (null if none). */
+  resale_listing_id?: number | null;
+  /** Status of the existing resale listing: "ACTIVE", "SOLD", "REMOVED", or null. */
+  resale_status?: string | null;
 }
 
 interface SellerOrdersResponse {
@@ -119,19 +123,23 @@ function formatPurchaseDate(iso: string): string {
  * A single Amazon-style order card.
  *
  * `onReturn` is always available; `onResell` is provided only when the order is
- * resell-eligible and the card renders the "Resell via Amazon" action then. The
- * handlers are seams for task 16.2 (scan modal + submission).
+ * resell-eligible and not already listed. `onRemoveListing` is provided when
+ * the order has an ACTIVE resale listing.
  */
 function OrderCard({
   order,
   returned,
   onReturn,
   onResell,
+  onRemoveListing,
+  removingListingId,
 }: {
   order: SellerOrder;
   returned: boolean;
   onReturn: (order: SellerOrder) => void;
   onResell: (order: SellerOrder) => void;
+  onRemoveListing: (order: SellerOrder) => void;
+  removingListingId: number | null;
 }) {
   const returnCopy =
     order.return_status === "SCANNING"
@@ -139,6 +147,10 @@ function OrderCard({
       : order.return_status
         ? `Returned · ${order.return_status.replaceAll("_", " ").toLowerCase()}`
         : "Scanning for nearby buyers";
+
+  const isActiveListing = order.resale_listing_id != null && order.resale_status === "ACTIVE";
+  const isSoldListing = order.resale_status === "SOLD";
+  const isRemovingThis = removingListingId === order.resale_listing_id;
 
   return (
     <li className="rounded-amazon border border-gray-300 bg-white shadow-sm">
@@ -154,8 +166,6 @@ function OrderCard({
       <div className="flex flex-col gap-4 p-4 sm:flex-row">
         <div className="shrink-0">
           <ProductImage
-            // Prefer the uploaded photo; fall back to the catalog image, then
-            // the bundled placeholder (handled inside ProductImage).
             src={order.uploaded_image_path || order.image_url}
             alt={order.name}
             className="aspect-square w-28"
@@ -192,13 +202,34 @@ function OrderCard({
           )}
 
           {order.resell_eligible ? (
-            <button
-              type="button"
-              onClick={() => onResell(order)}
-              className="inline-flex w-full items-center justify-center rounded-amazon border border-gray-400 bg-white px-4 py-2 text-sm font-medium text-amazonInk shadow-sm hover:bg-amazonBg focus:outline-none focus-visible:ring-2 focus-visible:ring-amazonOrange"
-            >
-              Resell via Amazon
-            </button>
+            isActiveListing ? (
+              /* Already listed — show badge + remove button */
+              <>
+                <p className="inline-flex w-full items-center justify-center gap-1 rounded-amazon border border-green-600 bg-green-50 px-3 py-2 text-center text-xs font-bold text-green-800">
+                  ✅ Listed on Marketplace
+                </p>
+                <button
+                  type="button"
+                  disabled={isRemovingThis}
+                  onClick={() => onRemoveListing(order)}
+                  className="inline-flex w-full items-center justify-center rounded-amazon border border-red-400 bg-white px-4 py-2 text-sm font-medium text-red-600 shadow-sm hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isRemovingThis ? "Removing…" : "Remove Listing"}
+                </button>
+              </>
+            ) : isSoldListing ? (
+              <p className="inline-flex w-full items-center justify-center rounded-amazon border border-gray-300 bg-amazonBg px-3 py-2 text-center text-xs text-gray-600">
+                Sold on Marketplace
+              </p>
+            ) : (
+              <button
+                type="button"
+                onClick={() => onResell(order)}
+                className="inline-flex w-full items-center justify-center rounded-amazon border border-gray-400 bg-white px-4 py-2 text-sm font-medium text-amazonInk shadow-sm hover:bg-amazonBg focus:outline-none focus-visible:ring-2 focus-visible:ring-amazonOrange"
+              >
+                Resell via Amazon
+              </button>
+            )
           ) : null}
         </div>
       </div>
@@ -266,6 +297,8 @@ export default function OrdersPage() {
   const [returnedOrderIds, setReturnedOrderIds] = useState<Set<number>>(
     () => new Set(),
   );
+  // listing_id currently being removed (for per-card loading state).
+  const [removingListingId, setRemovingListingId] = useState<number | null>(null);
   // Transient confirmation/error banner shown after a submission.
   const [banner, setBanner] = useState<OrdersBanner | null>(null);
 
@@ -284,6 +317,37 @@ export default function OrdersPage() {
     setGradingOrder(order);
   }, []);
 
+  // Clicking "Remove Listing" calls DELETE /api/resale/{id} and updates the
+  // local orders list so the card switches back to "Resell via Amazon".
+  const handleRemoveListing = useCallback(async (order: SellerOrder) => {
+    if (!order.resale_listing_id) return;
+    setBanner(null);
+    setRemovingListingId(order.resale_listing_id);
+    try {
+      await api.del(`/api/resale/${order.resale_listing_id}`);
+      // Update the order in local state so the card reflects the removal.
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.order_history_id === order.order_history_id
+            ? { ...o, resale_listing_id: null, resale_status: "REMOVED" }
+            : o,
+        ),
+      );
+      setBanner({
+        kind: "success",
+        message: `${order.name} has been removed from the marketplace.`,
+      });
+    } catch (err) {
+      const message =
+        err instanceof ApiError
+          ? err.message
+          : "We couldn't remove your listing. Please try again.";
+      setBanner({ kind: "error", message });
+    } finally {
+      setRemovingListingId(null);
+    }
+  }, []);
+
   // Invoked when the mock AI grading scan finishes (Requirement 11.5): only now
   // do we submit the resale listing with the mock grade, mock condition image,
   // and suggested price (clamped <= the product price), then close the modal
@@ -296,12 +360,24 @@ export default function OrdersPage() {
       // a resale price above the catalog price.
       const resalePrice = Math.min(result.suggested_price, order.price);
       try {
-        await api.post<CreateListingResponse>("/api/resale/list", {
+        const resp = await api.post<CreateListingResponse>("/api/resale/list", {
           order_history_id: order.order_history_id,
           condition_grade: result.condition_grade,
           condition_image_url: result.condition_image_url,
           resale_price: resalePrice,
         });
+        // Update the order in local state so the card shows "Listed on Marketplace".
+        setOrders((prev) =>
+          prev.map((o) =>
+            o.order_history_id === order.order_history_id
+              ? {
+                  ...o,
+                  resale_listing_id: resp.resale_listing.id,
+                  resale_status: "ACTIVE",
+                }
+              : o,
+          ),
+        );
         setBanner({
           kind: "success",
           message: `Listed on Amazon Local Verified Used Deals — ${order.name} (${result.condition_grade}).`,
@@ -485,6 +561,8 @@ export default function OrdersPage() {
                     }
                     onReturn={handleReturn}
                     onResell={handleResell}
+                    onRemoveListing={handleRemoveListing}
+                    removingListingId={removingListingId}
                   />
                 ))}
               </ul>
