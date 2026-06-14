@@ -50,6 +50,8 @@ interface ResaleFeedItem {
   id: number;
   condition_grade: ConditionGrade;
   resale_price: number;
+  /** Base price + ₹50 Amazon Commission — the final price shown to the buyer. */
+  buyer_total_price: number;
   status: string;
   listed_at: string;
   condition_image_url: string;
@@ -130,22 +132,12 @@ function DealCard({
         <span>✅ Amazon Verified Original Purchase</span>
       </p>
 
-      {/* Condition grade (Req 12.6). */}
-      <p className="mt-2">
-        <span
-          className={[
-            "inline-flex items-center gap-1 rounded border px-2 py-0.5 text-xs font-bold",
-            gradeClasses(item.condition_grade),
-          ].join(" ")}
-        >
-          <ShieldCheck className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-          Condition: {item.condition_grade}
-        </span>
-      </p>
-
-      {/* Resale price (₹ INR). */}
+      {/* Final price = base + ₹50 Amazon Commission. */}
       <p className="mt-2 text-lg font-bold text-amazonInk">
-        {currency.format(item.resale_price)}
+        {currency.format(Number(item.buyer_total_price))}
+      </p>
+      <p className="mt-0.5 text-xs text-gray-500">
+        Base {currency.format(Number(item.resale_price))} + ₹50 Amazon Commission
       </p>
 
       {/* Original purchase date — evidence of the verified original purchase. */}
@@ -221,7 +213,7 @@ export default function LocalDealsPage() {
       setBanner({
         kind: "success",
         message: `Purchased ${item.product.name} (${item.condition_grade}) for ${currency.format(
-          item.resale_price,
+          Number(item.buyer_total_price),
         )}. It's on its way!`,
       });
     } catch (err) {

@@ -55,9 +55,9 @@ export default function CheckoutPage() {
   }, [user?.user_id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const totals = useMemo(() => {
-    const subtotal = items.reduce((sum, item) => sum + item.product.price, 0);
+    const subtotal = items.reduce((sum, item) => sum + Number(item.product.price), 0);
     const openBoxDiscount = items.reduce(
-      (sum, item) => sum + Math.max(0, item.product.price - cartLinePrice(item)),
+      (sum, item) => sum + Math.max(0, Number(item.product.price) - cartLinePrice(item)),
       0,
     );
     const claimedDealDiscount = user
@@ -71,7 +71,7 @@ export default function CheckoutPage() {
     };
   }, [items, user?.user_id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function placeOrder(method: PaymentMethod) {
+  async function placeOrder(method: PaymentMethod) {
     if (!user || items.length === 0) return;
     setPaymentMethod(method);
     const claimed = getClaimedDealAsins(user.user_id);
@@ -94,6 +94,16 @@ export default function CheckoutPage() {
       })),
     };
     savePlacedOrder(user.user_id, order);
+
+    // Clear the cart on the backend so it doesn't show stale items on next
+    // visit. Fire-and-forget: a failure here doesn't block the confirmation.
+    try {
+      await api.del("/api/cart");
+    } catch {
+      // Non-fatal — order is already saved locally.
+    }
+
+    setItems([]);
     setPlacedOrder(order);
   }
 

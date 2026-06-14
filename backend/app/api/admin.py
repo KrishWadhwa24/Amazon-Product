@@ -26,7 +26,6 @@ from app.services import admin as admin_service
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
-
 class AdminMetricsResponse(BaseModel):
     """``200`` payload for ``GET /api/admin/metrics`` (Requirement 13.1).
 
@@ -34,6 +33,11 @@ class AdminMetricsResponse(BaseModel):
     ``total >= 1``; the three aggregates are non-negative. ``cache_used`` is a
     real read (MICROWAREHOUSE/CACHED count) while ``cache_total`` and the
     aggregates are mocked plausible stand-ins (see the admin service).
+
+    New profit/impact fields (Features 1-3):
+    * ``resale_commission_earned`` — ₹50 × SOLD resale listing count.
+    * ``tax_credits_accrued`` — sum of product prices for NGO_ROUTING returns.
+    * ``logistics_savings`` — 10% × product price for LOCAL_DELIVERY returns.
     """
 
     cache_used: int
@@ -41,6 +45,9 @@ class AdminMetricsResponse(BaseModel):
     reverse_logistics_saved: Decimal
     carbon_offset_index_kg: float
     ngo_csr_credits: Decimal
+    resale_commission_earned: Decimal
+    tax_credits_accrued: Decimal
+    logistics_savings: Decimal
 
 
 @router.get(
@@ -60,12 +67,20 @@ async def get_metrics(
     metric values (Requirement 13.3).
     """
     metrics = await admin_service.compute_metrics(session)
+    return _metrics_response(metrics)
+
+
+def _metrics_response(metrics: "admin_service.AdminMetrics") -> AdminMetricsResponse:
+    """Convert an :class:`~app.services.admin.AdminMetrics` to the API response model."""
     return AdminMetricsResponse(
         cache_used=metrics.cache_used,
         cache_total=metrics.cache_total,
         reverse_logistics_saved=metrics.reverse_logistics_saved,
         carbon_offset_index_kg=metrics.carbon_offset_index_kg,
         ngo_csr_credits=metrics.ngo_csr_credits,
+        resale_commission_earned=metrics.resale_commission_earned,
+        tax_credits_accrued=metrics.tax_credits_accrued,
+        logistics_savings=metrics.logistics_savings,
     )
 
 
@@ -214,14 +229,148 @@ async def dispatch_returns(
     outcome = await admin_service.dispatch_rto(
         session, action=body.action, hub_id=body.hub_id
     )
-    metrics = outcome.metrics
     return DispatchResponse(
         transitioned_count=outcome.transitioned_count,
-        metrics=AdminMetricsResponse(
-            cache_used=metrics.cache_used,
-            cache_total=metrics.cache_total,
-            reverse_logistics_saved=metrics.reverse_logistics_saved,
-            carbon_offset_index_kg=metrics.carbon_offset_index_kg,
-            ngo_csr_credits=metrics.ngo_csr_credits,
-        ),
+        metrics=_metrics_response(outcome.metrics),
+    )
+
+
+# --------------------------------------------------------------------------- #
+# Cache management endpoints
+# --------------------------------------------------------------------------- #
+
+
+class CacheAddRequest(BaseModel):
+    """Request body for ``POST /api/admin/cache/add``.
+
+    ``return_order_id`` identifies the SCANNING ReturnOrder to move into the
+    local micro-warehouse cache (MICROWAREHOUSE status).
+    """
+
+    return_order_id: int
+
+
+class CacheAddResponse(BaseModel):
+    """``200`` payload for ``POST /api/admin/cache/add``.
+
+    Returns the updated cache counts so the frontend KPI card refreshes
+    immediately without a separate metrics fetch.
+    """
+
+    return_order_id: int
+    cache_used: int
+    cache_total: int
+
+
+@router.post(
+    "/cache/add",
+    response_model=CacheAddResponse,
+    summary="Move a SCANNING return into the local micro-warehouse cache",
+)
+async def cache_add(
+    body: CacheAddRequest,
+    session: AsyncSession = Depends(get_session),
+) -> CacheAddResponse:
+    """Transition a SCANNING ReturnOrder to MICROWAREHOUSE (cached).
+
+    Looks up the ReturnOrder by ``return_order_id``, validates it is currently
+    SCANNING, transitions it to MICROWAREHOUSE, commits, and returns the updated
+    cache counts. Raises ``404 NOT_FOUND`` when the id does not exist and
+    ``400 INVALID_STATUS`` when the return is not in SCANNING state.
+    """
+    result = await admin_service.cache_add_return(session, body.return_order_id)
+    return CacheAddResponse(
+        return_order_id=result.return_order_id,
+        cache_used=result.cache_used,
+        cache_total=result.cache_total,
+    )
+
+
+class CacheDispatchResponse(BaseModel):
+    """``200`` payload for ``POST /api/admin/cache/dispatch``.
+
+    ``dispatched_count`` is the number of MICROWAREHOUSE returns moved to
+    FC_TRANSIT (zero when the cache was already empty). ``metrics`` is the
+    recalculated post-dispatch KPI bundle so the dashboard refreshes in one
+    round-trip.
+    """
+
+    dispatched_count: int
+    metrics: AdminMetricsResponse
+
+
+@router.post(
+    "/cache/dispatch",
+    response_model=CacheDispatchResponse,
+    summary="Dispatch all cached (MICROWAREHOUSE) returns to the main FC",
+)
+async def cache_dispatch(
+    session: AsyncSession = Depends(get_session),
+) -> CacheDispatchResponse:
+    """Transition every MICROWAREHOUSE return to FC_TRANSIT (dispatch to FC).
+
+    Selects all ReturnOrders with status MICROWAREHOUSE, moves each to
+    FC_TRANSIT, commits, and returns the count of dispatched items plus the
+    recalculated metrics (cache_used resets to 0). Returns ``dispatched_count=0``
+    when the cache is already empty — this is not an error.
+    """
+    result = await admin_service.cache_dispatch_to_fc(session)
+    return CacheDispatchResponse(
+        dispatched_count=result.dispatched_count,
+        metrics=_metrics_response(result.metrics),
+    )
+
+
+# --------------------------------------------------------------------------- #
+# NGO dispatch endpoint (Feature 2)
+# --------------------------------------------------------------------------- #
+
+
+class NgoDispatchRequest(BaseModel):
+    """Request body for ``POST /api/admin/ngo/dispatch``.
+
+    ``return_order_id`` identifies the NGO_ROUTING ReturnOrder to dispatch to
+    the NGO charity partner.
+    """
+
+    return_order_id: int
+
+
+class NgoDispatchResponse(BaseModel):
+    """``200`` payload for ``POST /api/admin/ngo/dispatch``.
+
+    ``return_order_id`` echoes the dispatched row's id.
+    ``deducted_value`` is the product price subtracted from the inventory ledger
+    and added to the Tax Credits Accrued metric.
+    ``metrics`` is the recalculated post-dispatch KPI bundle so the dashboard
+    refreshes in one round-trip.
+    """
+
+    return_order_id: int
+    deducted_value: Decimal
+    metrics: AdminMetricsResponse
+
+
+@router.post(
+    "/ngo/dispatch",
+    response_model=NgoDispatchResponse,
+    summary="Dispatch a NGO_ROUTING return to the NGO and record tax credit",
+)
+async def ngo_dispatch(
+    body: NgoDispatchRequest,
+    session: AsyncSession = Depends(get_session),
+) -> NgoDispatchResponse:
+    """Dispatch a single NGO_ROUTING return to the NGO charity partner.
+
+    Looks up the ReturnOrder, validates it is NGO_ROUTING (``400`` otherwise,
+    ``404`` if not found), marks it as dispatched (FC_TRANSIT), and adds the
+    product's price to the cumulative Tax Credits Accrued ledger. Returns the
+    deducted value and the recalculated metrics so the dashboard updates
+    immediately without a separate refetch.
+    """
+    result = await admin_service.dispatch_to_ngo(session, body.return_order_id)
+    return NgoDispatchResponse(
+        return_order_id=result.return_order_id,
+        deducted_value=result.deducted_value,
+        metrics=_metrics_response(result.metrics),
     )

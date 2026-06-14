@@ -369,6 +369,28 @@ async def add_to_cart(
     )
 
 
+@router.delete(
+    "/cart",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Clear all cart items for the active buyer",
+)
+async def clear_cart(
+    buyer_id: int = Depends(require_current_user_id),
+    session: AsyncSession = Depends(get_session),
+) -> None:
+    """Delete every CartItem row belonging to the active buyer.
+
+    Called by the frontend immediately after an order is placed so the cart is
+    emptied. Returns ``204 No Content`` on success.
+    """
+    from sqlalchemy import delete as sql_delete
+
+    await session.execute(
+        sql_delete(CartItem).where(CartItem.user_id == buyer_id)
+    )
+    await session.commit()
+
+
 @router.get(
     "/cart",
     response_model=list[CartItemResource],

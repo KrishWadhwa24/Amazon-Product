@@ -28,8 +28,12 @@ export interface Product {
 export interface CartItemProduct {
   asin: string;
   name: string;
-  /** Price in INR (₹). */
-  price: number;
+  /**
+   * Price in INR (₹). The backend serialises `Decimal` values as strings in
+   * some configurations, so the type allows both and consumers must coerce with
+   * `Number(price)` before arithmetic.
+   */
+  price: number | string;
   image_url: string;
   uploaded_image_path: string | null;
 }

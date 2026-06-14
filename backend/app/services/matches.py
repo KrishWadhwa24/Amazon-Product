@@ -22,18 +22,37 @@ A rejected guard leaves the candidate (and its ReturnOrder) unchanged. The
 transport layer (``app.api.matches``) loads the candidate, resolves the active
 user from the session cookie, and maps these domain errors to the shared error
 envelope.
+
+Feature 3 — Zero-Mile Logistics Savings
+----------------------------------------
+When a match is accepted the return bypasses the main FC and is delivered
+locally, saving reverse-logistics cost. ``accept_match`` records 10% of the
+product's original price in the ``logistics_savings_paise`` AnalyticsCounter
+(integer paise = ₹ × 100) so the Admin dashboard can show a cumulative,
+event-driven "Logistics Savings (Zero-Mile)" metric that persists correctly
+across sessions and never depends on a fragile live status join.
 """
 
 from __future__ import annotations
 
-from sqlalchemy import update
+from decimal import Decimal
+
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.core.errors import ForbiddenError, OfferUnavailableError
+from app.models.analytics_counter import AnalyticsCounter
 from app.models.enums import MatchStatus, ReturnStatus
 from app.models.match_candidate import MatchCandidate
 from app.models.return_order import ReturnOrder
 from app.services import lifecycle
+
+#: AnalyticsCounter name for cumulative logistics savings stored in paise (₹×100).
+LOGISTICS_SAVINGS_COUNTER: str = "logistics_savings_paise"
+
+#: Fraction of the product's original price saved per zero-mile local delivery.
+LOGISTICS_SAVINGS_RATE: Decimal = Decimal("0.10")
 
 # The exact local-delivery advancement path taken when a candidate is accepted
 # (Requirement 9.5). Each hop is validated by the pure lifecycle state machine.
@@ -97,10 +116,16 @@ async def accept_match(
 
     Enforces ownership (Requirement 9.7) and PENDING-only (Requirement 9.6)
     guards first — either raises without mutation. On success, within one
-    committed transaction it sets the candidate ACCEPTED, advances the
-    associated ReturnOrder ``SCANNING -> MATCH_FOUND -> BUYER_ACCEPTED ->
-    LOCAL_DELIVERY`` through the pure lifecycle core, and EXPIRES every other
-    PENDING candidate for the same ReturnOrder.
+    committed transaction it:
+
+    1. Sets the candidate ACCEPTED.
+    2. Advances the ReturnOrder ``SCANNING -> MATCH_FOUND -> BUYER_ACCEPTED ->
+       LOCAL_DELIVERY`` through the pure lifecycle core (Requirement 9.5).
+    3. EXPIRES every other PENDING candidate for the same ReturnOrder
+       (Requirements 9.4, 9.8).
+    4. Records 10% of the product's original price in the
+       ``logistics_savings_paise`` AnalyticsCounter (Feature 3) so the Admin
+       dashboard's "Logistics Savings (Zero-Mile)" KPI accumulates correctly.
 
     Args:
         session: The active async DB session (the unit of transaction).
@@ -128,6 +153,39 @@ async def accept_match(
     await _expire_sibling_pending(
         session, return_order_id=return_order.id, except_id=candidate.id
     )
+
+    # --- Feature 3: Record logistics savings (10% of product price) ---
+    # Load the product for this return to read its price.
+    # We use a targeted query rather than an extra eager-load on the caller so
+    # the API layer doesn't need changing.
+    return_order_with_product = (
+        await session.execute(
+            select(ReturnOrder)
+            .where(ReturnOrder.id == return_order.id)
+            .options(selectinload(ReturnOrder.product))
+        )
+    ).scalar_one_or_none()
+
+    if return_order_with_product is not None and return_order_with_product.product is not None:
+        product_price = Decimal(str(return_order_with_product.product.price))
+        savings = (product_price * LOGISTICS_SAVINGS_RATE).to_integral_value()
+        savings_paise = int(savings)  # already in rupees — store as paise (×100)
+        savings_paise_full = int((product_price * LOGISTICS_SAVINGS_RATE * 100).to_integral_value())
+
+        savings_counter = (
+            await session.execute(
+                select(AnalyticsCounter).where(
+                    AnalyticsCounter.name == LOGISTICS_SAVINGS_COUNTER
+                )
+            )
+        ).scalar_one_or_none()
+
+        if savings_counter is None:
+            session.add(
+                AnalyticsCounter(name=LOGISTICS_SAVINGS_COUNTER, value=savings_paise_full)
+            )
+        else:
+            savings_counter.value = savings_counter.value + savings_paise_full
 
     await session.commit()
     await session.refresh(candidate)

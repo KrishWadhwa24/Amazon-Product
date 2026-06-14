@@ -62,9 +62,14 @@ class ResaleListingResource(BaseModel):
 
 
 class CreateListingResponse(BaseModel):
-    """``201`` response envelope carrying the created ResaleListing."""
+    """``201`` response envelope carrying the created ResaleListing.
+
+    ``buyer_total_price`` is ``resale_price + ₹50 Amazon Commission``, the
+    final price the buyer will see on the marketplace feed.
+    """
 
     resale_listing: ResaleListingResource
+    buyer_total_price: Decimal
 
 
 class FeedProductResource(BaseModel):
@@ -91,11 +96,14 @@ class ResaleFeedItemResource(BaseModel):
     the ``original_purchased_at`` date from the source order, and — for the
     Split-Trust gallery — BOTH the official Product ``image_url`` (nested under
     ``product``) and the listing's ``condition_image_url`` as non-empty URLs.
+    ``buyer_total_price`` is ``resale_price + ₹50 Amazon Commission`` — the
+    final price shown to buyers on the marketplace.
     """
 
     id: int
     condition_grade: ConditionGrade
     resale_price: Decimal
+    buyer_total_price: Decimal
     status: ResaleStatus
     listed_at: datetime
     condition_image_url: str
@@ -126,7 +134,7 @@ async def create_listing(
     (``422 INVALID_RESALE_PRICE``, Requirement 11.2); all are rendered as the
     shared error envelope by the application's domain-error handler.
     """
-    listing = await resale_service.create_listing(
+    result = await resale_service.create_listing(
         session,
         seller_id=seller_id,
         order_history_id=body.order_history_id,
@@ -135,7 +143,8 @@ async def create_listing(
         resale_price=body.resale_price,
     )
     return CreateListingResponse(
-        resale_listing=ResaleListingResource.model_validate(listing)
+        resale_listing=ResaleListingResource.model_validate(result.listing),
+        buyer_total_price=result.buyer_total_price,
     )
 
 
@@ -166,6 +175,7 @@ async def get_feed(
             id=item.listing.id,
             condition_grade=item.listing.condition_grade,
             resale_price=item.listing.resale_price,
+            buyer_total_price=item.buyer_total_price,
             status=item.listing.status,
             listed_at=item.listing.listed_at,
             condition_image_url=item.listing.condition_image_url,
