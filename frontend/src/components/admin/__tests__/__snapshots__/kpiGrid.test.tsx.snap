@@ -1,0 +1,515 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`KPIGrid — populated metrics (Req 13.2) > matches the populated grid snapshot 1`] = `
+<div>
+  <div
+    class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+  >
+    <div
+      class="flex flex-col rounded-lg border border-slate-800 bg-slate-900 p-4 shadow-sm"
+    >
+      <div
+        class="flex items-center gap-2"
+      >
+        <span
+          class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800 text-amazonOrange"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-database h-4 w-4"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <ellipse
+              cx="12"
+              cy="5"
+              rx="9"
+              ry="3"
+            />
+            <path
+              d="M3 5V19A9 3 0 0 0 21 19V5"
+            />
+            <path
+              d="M3 12A9 3 0 0 0 21 12"
+            />
+          </svg>
+        </span>
+        <h3
+          class="text-xs font-semibold uppercase tracking-wide text-slate-400"
+        >
+          Cache Storage Capacity
+        </h3>
+      </div>
+      <div
+        class="mt-3"
+      >
+        <div
+          class="flex items-baseline gap-2"
+        >
+          <span
+            class="text-2xl font-bold text-white"
+          >
+            82
+            %
+          </span>
+          <span
+            class="text-sm text-slate-400"
+          >
+            — 
+            410
+            /
+            500
+          </span>
+        </div>
+        <div
+          aria-label="Cache storage capacity used"
+          aria-valuemax="100"
+          aria-valuemin="0"
+          aria-valuenow="82"
+          class="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-800"
+          role="progressbar"
+        >
+          <div
+            class="h-full rounded-full bg-amazonOrange transition-all"
+            style="width: 82%;"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex flex-col rounded-lg border border-slate-800 bg-slate-900 p-4 shadow-sm"
+    >
+      <div
+        class="flex items-center gap-2"
+      >
+        <span
+          class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800 text-emerald-400"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-indian-rupee h-4 w-4"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M6 3h12"
+            />
+            <path
+              d="M6 8h12"
+            />
+            <path
+              d="m6 13 8.5 8"
+            />
+            <path
+              d="M6 13h3"
+            />
+            <path
+              d="M9 13c6.667 0 6.667-10 0-10"
+            />
+          </svg>
+        </span>
+        <h3
+          class="text-xs font-semibold uppercase tracking-wide text-slate-400"
+        >
+          Reverse Logistics Saved
+        </h3>
+      </div>
+      <div
+        class="mt-3"
+      >
+        <p
+          class="flex items-baseline gap-1"
+        >
+          <span
+            class="text-2xl font-bold text-white"
+          >
+            ₹1,42,500.00
+          </span>
+        </p>
+      </div>
+    </div>
+    <div
+      class="flex flex-col rounded-lg border border-slate-800 bg-slate-900 p-4 shadow-sm"
+    >
+      <div
+        class="flex items-center gap-2"
+      >
+        <span
+          class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800 text-green-400"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-leaf h-4 w-4"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
+            />
+            <path
+              d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"
+            />
+          </svg>
+        </span>
+        <h3
+          class="text-xs font-semibold uppercase tracking-wide text-slate-400"
+        >
+          Carbon Offset Index
+        </h3>
+      </div>
+      <div
+        class="mt-3"
+      >
+        <p
+          class="flex items-baseline gap-1"
+        >
+          <span
+            class="text-2xl font-bold text-white"
+          >
+            1240.0
+          </span>
+          <span
+            class="text-sm text-slate-400"
+          >
+            kg CO₂
+          </span>
+        </p>
+      </div>
+    </div>
+    <div
+      class="flex flex-col rounded-lg border border-slate-800 bg-slate-900 p-4 shadow-sm"
+    >
+      <div
+        class="flex items-center gap-2"
+      >
+        <span
+          class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800 text-sky-400"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-heart-handshake h-4 w-4"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+            />
+            <path
+              d="M12 5 9.04 7.96a2.17 2.17 0 0 0 0 3.08c.82.82 2.13.85 3 .07l2.07-1.9a2.82 2.82 0 0 1 3.79 0l2.96 2.66"
+            />
+            <path
+              d="m18 15-2-2"
+            />
+            <path
+              d="m15 18-2-2"
+            />
+          </svg>
+        </span>
+        <h3
+          class="text-xs font-semibold uppercase tracking-wide text-slate-400"
+        >
+          NGO CSR Credits
+        </h3>
+      </div>
+      <div
+        class="mt-3"
+      >
+        <p
+          class="flex items-baseline gap-1"
+        >
+          <span
+            class="text-2xl font-bold text-white"
+          >
+            ₹45,000.00
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`KPIGrid — zero metrics never render blank (Req 13.4) > matches the zero-metrics grid snapshot 1`] = `
+<div>
+  <div
+    class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+  >
+    <div
+      class="flex flex-col rounded-lg border border-slate-800 bg-slate-900 p-4 shadow-sm"
+    >
+      <div
+        class="flex items-center gap-2"
+      >
+        <span
+          class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800 text-amazonOrange"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-database h-4 w-4"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <ellipse
+              cx="12"
+              cy="5"
+              rx="9"
+              ry="3"
+            />
+            <path
+              d="M3 5V19A9 3 0 0 0 21 19V5"
+            />
+            <path
+              d="M3 12A9 3 0 0 0 21 12"
+            />
+          </svg>
+        </span>
+        <h3
+          class="text-xs font-semibold uppercase tracking-wide text-slate-400"
+        >
+          Cache Storage Capacity
+        </h3>
+      </div>
+      <div
+        class="mt-3"
+      >
+        <div
+          class="flex items-baseline gap-2"
+        >
+          <span
+            class="text-2xl font-bold text-white"
+          >
+            0
+            %
+          </span>
+          <span
+            class="text-sm text-slate-400"
+          >
+            — 
+            0
+            /
+            1
+          </span>
+        </div>
+        <div
+          aria-label="Cache storage capacity used"
+          aria-valuemax="100"
+          aria-valuemin="0"
+          aria-valuenow="0"
+          class="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-800"
+          role="progressbar"
+        >
+          <div
+            class="h-full rounded-full bg-amazonOrange transition-all"
+            style="width: 0%;"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex flex-col rounded-lg border border-slate-800 bg-slate-900 p-4 shadow-sm"
+    >
+      <div
+        class="flex items-center gap-2"
+      >
+        <span
+          class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800 text-emerald-400"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-indian-rupee h-4 w-4"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M6 3h12"
+            />
+            <path
+              d="M6 8h12"
+            />
+            <path
+              d="m6 13 8.5 8"
+            />
+            <path
+              d="M6 13h3"
+            />
+            <path
+              d="M9 13c6.667 0 6.667-10 0-10"
+            />
+          </svg>
+        </span>
+        <h3
+          class="text-xs font-semibold uppercase tracking-wide text-slate-400"
+        >
+          Reverse Logistics Saved
+        </h3>
+      </div>
+      <div
+        class="mt-3"
+      >
+        <p
+          class="flex items-baseline gap-1"
+        >
+          <span
+            class="text-2xl font-bold text-white"
+          >
+            ₹0.00
+          </span>
+        </p>
+      </div>
+    </div>
+    <div
+      class="flex flex-col rounded-lg border border-slate-800 bg-slate-900 p-4 shadow-sm"
+    >
+      <div
+        class="flex items-center gap-2"
+      >
+        <span
+          class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800 text-green-400"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-leaf h-4 w-4"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
+            />
+            <path
+              d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"
+            />
+          </svg>
+        </span>
+        <h3
+          class="text-xs font-semibold uppercase tracking-wide text-slate-400"
+        >
+          Carbon Offset Index
+        </h3>
+      </div>
+      <div
+        class="mt-3"
+      >
+        <p
+          class="flex items-baseline gap-1"
+        >
+          <span
+            class="text-2xl font-bold text-white"
+          >
+            0.0
+          </span>
+          <span
+            class="text-sm text-slate-400"
+          >
+            kg CO₂
+          </span>
+        </p>
+      </div>
+    </div>
+    <div
+      class="flex flex-col rounded-lg border border-slate-800 bg-slate-900 p-4 shadow-sm"
+    >
+      <div
+        class="flex items-center gap-2"
+      >
+        <span
+          class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800 text-sky-400"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-heart-handshake h-4 w-4"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+            />
+            <path
+              d="M12 5 9.04 7.96a2.17 2.17 0 0 0 0 3.08c.82.82 2.13.85 3 .07l2.07-1.9a2.82 2.82 0 0 1 3.79 0l2.96 2.66"
+            />
+            <path
+              d="m18 15-2-2"
+            />
+            <path
+              d="m15 18-2-2"
+            />
+          </svg>
+        </span>
+        <h3
+          class="text-xs font-semibold uppercase tracking-wide text-slate-400"
+        >
+          NGO CSR Credits
+        </h3>
+      </div>
+      <div
+        class="mt-3"
+      >
+        <p
+          class="flex items-baseline gap-1"
+        >
+          <span
+            class="text-2xl font-bold text-white"
+          >
+            ₹0.00
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;

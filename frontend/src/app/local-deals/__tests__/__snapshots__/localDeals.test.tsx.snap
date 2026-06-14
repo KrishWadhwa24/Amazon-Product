@@ -1,0 +1,385 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`LocalDealsPage — empty state (Req 12.5) > renders the title and an empty-state message with no error 1`] = `
+<div>
+  <section
+    class="space-y-4"
+  >
+    <header>
+      <h1
+        class="text-2xl font-bold text-amazonInk"
+      >
+        Amazon Local Verified Used Deals
+      </h1>
+      <p
+        class="mt-1 text-sm text-gray-600"
+      >
+        Open-box and pre-owned items from verified original purchases, near you.
+      </p>
+    </header>
+    <div
+      class="rounded-amazon border border-gray-300 bg-white p-8 text-center shadow-sm"
+    >
+      <p
+        class="text-base font-bold text-amazonInk"
+      >
+        No local deals available yet
+      </p>
+      <p
+        class="mx-auto mt-1 max-w-md text-sm text-gray-600"
+      >
+        Verified used items listed by sellers near you will appear here. Check back soon for open-box savings.
+      </p>
+    </div>
+  </section>
+</div>
+`;
+
+exports[`LocalDealsPage — populated grid (Req 12.4, 12.6) > renders the verified badge, condition grade, and matches a snapshot 1`] = `
+<div>
+  <section
+    class="space-y-4"
+  >
+    <header>
+      <h1
+        class="text-2xl font-bold text-amazonInk"
+      >
+        Amazon Local Verified Used Deals
+      </h1>
+      <p
+        class="mt-1 text-sm text-gray-600"
+      >
+        Open-box and pre-owned items from verified original purchases, near you.
+      </p>
+    </header>
+    <ul
+      class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+    >
+      <li
+        class="flex flex-col rounded-amazon border border-gray-300 bg-white p-3 shadow-sm"
+      >
+        <div
+          class="flex flex-col gap-2 "
+          data-testid="split-trust-gallery"
+        >
+          <div
+            class="relative aspect-square w-full"
+          >
+            <span
+              class="block overflow-hidden rounded-amazon bg-white aspect-square w-full"
+            >
+              <img
+                alt="Sony WH-CH520 Wireless Headphones — official Amazon catalog image"
+                class="h-full w-full object-contain "
+                data-placeholder="false"
+                src="https://example.com/official-1.jpg"
+              />
+            </span>
+          </div>
+          <ul
+            class="flex items-center gap-2"
+          >
+            <li>
+              <button
+                aria-label="View official Amazon catalog image"
+                aria-pressed="true"
+                class="block h-14 w-14 overflow-hidden rounded-amazon border bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-amazonOrange border-amazonOrange ring-1 ring-amazonOrange"
+                type="button"
+              >
+                <span
+                  class="block overflow-hidden rounded-amazon bg-white h-full w-full"
+                >
+                  <img
+                    alt="Sony WH-CH520 Wireless Headphones — official Amazon catalog image"
+                    class="h-full w-full object-contain "
+                    data-placeholder="false"
+                    src="https://example.com/official-1.jpg"
+                  />
+                </span>
+              </button>
+            </li>
+            <li>
+              <div
+                class="relative"
+              >
+                <span
+                  class="pointer-events-none absolute left-1 top-1 z-10 rounded bg-amazonNavy/90 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow "
+                >
+                  Live Condition
+                </span>
+                <button
+                  aria-label="View live condition photo"
+                  aria-pressed="false"
+                  class="block h-14 w-14 overflow-hidden rounded-amazon border bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-amazonOrange border-gray-300 hover:border-amazonLink"
+                  type="button"
+                >
+                  <span
+                    class="block overflow-hidden rounded-amazon bg-white h-full w-full"
+                  >
+                    <img
+                      alt="Sony WH-CH520 Wireless Headphones — live condition photo"
+                      class="h-full w-full object-contain "
+                      data-placeholder="false"
+                      src="https://example.com/condition-1.jpg"
+                    />
+                  </span>
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <a
+          class="mt-3 line-clamp-2 text-sm font-bold text-amazonLink hover:text-amazonOrange"
+          href="/product/B0SONY520"
+        >
+          Sony WH-CH520 Wireless Headphones
+        </a>
+        <p
+          class="mt-2 inline-flex items-center gap-1 text-xs font-bold text-green-800"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-badge-check h-4 w-4 shrink-0"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"
+            />
+            <path
+              d="m9 12 2 2 4-4"
+            />
+          </svg>
+          <span>
+            ✅ Amazon Verified Original Purchase
+          </span>
+        </p>
+        <p
+          class="mt-2"
+        >
+          <span
+            class="inline-flex items-center gap-1 rounded border px-2 py-0.5 text-xs font-bold border-green-700 bg-green-50 text-green-800"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-shield-check h-3.5 w-3.5 shrink-0"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+              />
+              <path
+                d="m9 12 2 2 4-4"
+              />
+            </svg>
+            Condition: 
+            Like New
+          </span>
+        </p>
+        <p
+          class="mt-2 text-lg font-bold text-amazonInk"
+        >
+          ₹3,499.00
+        </p>
+        <p
+          class="mt-1 text-xs text-gray-600"
+        >
+          Original purchase: 
+          15 January 2024
+        </p>
+        <div
+          class="mt-3 space-y-2"
+        >
+          <a
+            href="/login"
+          >
+            <button
+              class="inline-flex w-full items-center justify-center rounded-amazon bg-amazon-button border border-[#a88734]/60 px-4 py-2 text-sm font-medium text-amazonInk shadow-sm transition-[filter] hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-amazonOrange disabled:cursor-not-allowed disabled:opacity-60 "
+              type="button"
+            >
+              Sign in to buy
+            </button>
+          </a>
+        </div>
+      </li>
+      <li
+        class="flex flex-col rounded-amazon border border-gray-300 bg-white p-3 shadow-sm"
+      >
+        <div
+          class="flex flex-col gap-2 "
+          data-testid="split-trust-gallery"
+        >
+          <div
+            class="relative aspect-square w-full"
+          >
+            <span
+              class="block overflow-hidden rounded-amazon bg-white aspect-square w-full"
+            >
+              <img
+                alt="Levi's T-Shirt — official Amazon catalog image"
+                class="h-full w-full object-contain "
+                data-placeholder="false"
+                src="https://example.com/official-2.jpg"
+              />
+            </span>
+          </div>
+          <ul
+            class="flex items-center gap-2"
+          >
+            <li>
+              <button
+                aria-label="View official Amazon catalog image"
+                aria-pressed="true"
+                class="block h-14 w-14 overflow-hidden rounded-amazon border bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-amazonOrange border-amazonOrange ring-1 ring-amazonOrange"
+                type="button"
+              >
+                <span
+                  class="block overflow-hidden rounded-amazon bg-white h-full w-full"
+                >
+                  <img
+                    alt="Levi's T-Shirt — official Amazon catalog image"
+                    class="h-full w-full object-contain "
+                    data-placeholder="false"
+                    src="https://example.com/official-2.jpg"
+                  />
+                </span>
+              </button>
+            </li>
+            <li>
+              <div
+                class="relative"
+              >
+                <span
+                  class="pointer-events-none absolute left-1 top-1 z-10 rounded bg-amazonNavy/90 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow "
+                >
+                  Live Condition
+                </span>
+                <button
+                  aria-label="View live condition photo"
+                  aria-pressed="false"
+                  class="block h-14 w-14 overflow-hidden rounded-amazon border bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-amazonOrange border-gray-300 hover:border-amazonLink"
+                  type="button"
+                >
+                  <span
+                    class="block overflow-hidden rounded-amazon bg-white h-full w-full"
+                  >
+                    <img
+                      alt="Levi's T-Shirt — live condition photo"
+                      class="h-full w-full object-contain "
+                      data-placeholder="false"
+                      src="https://example.com/condition-2.jpg"
+                    />
+                  </span>
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <a
+          class="mt-3 line-clamp-2 text-sm font-bold text-amazonLink hover:text-amazonOrange"
+          href="/product/B0LEVIS01"
+        >
+          Levi's T-Shirt
+        </a>
+        <p
+          class="mt-2 inline-flex items-center gap-1 text-xs font-bold text-green-800"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-badge-check h-4 w-4 shrink-0"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"
+            />
+            <path
+              d="m9 12 2 2 4-4"
+            />
+          </svg>
+          <span>
+            ✅ Amazon Verified Original Purchase
+          </span>
+        </p>
+        <p
+          class="mt-2"
+        >
+          <span
+            class="inline-flex items-center gap-1 rounded border px-2 py-0.5 text-xs font-bold border-amazonLink bg-sky-50 text-amazonLink"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-shield-check h-3.5 w-3.5 shrink-0"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+              />
+              <path
+                d="m9 12 2 2 4-4"
+              />
+            </svg>
+            Condition: 
+            Good
+          </span>
+        </p>
+        <p
+          class="mt-2 text-lg font-bold text-amazonInk"
+        >
+          ₹599.00
+        </p>
+        <p
+          class="mt-1 text-xs text-gray-600"
+        >
+          Original purchase: 
+          20 February 2024
+        </p>
+        <div
+          class="mt-3 space-y-2"
+        >
+          <a
+            href="/login"
+          >
+            <button
+              class="inline-flex w-full items-center justify-center rounded-amazon bg-amazon-button border border-[#a88734]/60 px-4 py-2 text-sm font-medium text-amazonInk shadow-sm transition-[filter] hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-amazonOrange disabled:cursor-not-allowed disabled:opacity-60 "
+              type="button"
+            >
+              Sign in to buy
+            </button>
+          </a>
+        </div>
+      </li>
+    </ul>
+  </section>
+</div>
+`;

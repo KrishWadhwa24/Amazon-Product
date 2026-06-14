@@ -1,0 +1,76 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SplitTrustGallery — Split-Trust layout (Req 12.8) > renders the official image as primary, the condition thumbnail, and the Live Condition badge 1`] = `
+<div>
+  <div
+    class="flex flex-col gap-2 "
+    data-testid="split-trust-gallery"
+  >
+    <div
+      class="relative aspect-square w-full"
+    >
+      <span
+        class="block overflow-hidden rounded-amazon bg-white aspect-square w-full"
+      >
+        <img
+          alt="Sony WH-CH520 Wireless Headphones — official Amazon catalog image"
+          class="h-full w-full object-contain "
+          data-placeholder="false"
+          src="https://example.com/official-catalog.jpg"
+        />
+      </span>
+    </div>
+    <ul
+      class="flex items-center gap-2"
+    >
+      <li>
+        <button
+          aria-label="View official Amazon catalog image"
+          aria-pressed="true"
+          class="block h-14 w-14 overflow-hidden rounded-amazon border bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-amazonOrange border-amazonOrange ring-1 ring-amazonOrange"
+          type="button"
+        >
+          <span
+            class="block overflow-hidden rounded-amazon bg-white h-full w-full"
+          >
+            <img
+              alt="Sony WH-CH520 Wireless Headphones — official Amazon catalog image"
+              class="h-full w-full object-contain "
+              data-placeholder="false"
+              src="https://example.com/official-catalog.jpg"
+            />
+          </span>
+        </button>
+      </li>
+      <li>
+        <div
+          class="relative"
+        >
+          <span
+            class="pointer-events-none absolute left-1 top-1 z-10 rounded bg-amazonNavy/90 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow "
+          >
+            Live Condition
+          </span>
+          <button
+            aria-label="View live condition photo"
+            aria-pressed="false"
+            class="block h-14 w-14 overflow-hidden rounded-amazon border bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-amazonOrange border-gray-300 hover:border-amazonLink"
+            type="button"
+          >
+            <span
+              class="block overflow-hidden rounded-amazon bg-white h-full w-full"
+            >
+              <img
+                alt="Sony WH-CH520 Wireless Headphones — live condition photo"
+                class="h-full w-full object-contain "
+                data-placeholder="false"
+                src="https://example.com/live-condition.jpg"
+              />
+            </span>
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+`;

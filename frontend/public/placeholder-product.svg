@@ -1,0 +1,45 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="400"
+  height="400"
+  viewBox="0 0 400 400"
+  role="img"
+  aria-label="Image coming soon"
+>
+  <rect width="400" height="400" rx="8" fill="#EAEDED" />
+  <rect
+    x="0.5"
+    y="0.5"
+    width="399"
+    height="399"
+    rx="8"
+    fill="none"
+    stroke="#D5D9D9"
+    stroke-width="1"
+  />
+  <!-- Lucide-style "package" box icon, centered -->
+  <g
+    transform="translate(150 120) scale(4.16667)"
+    fill="none"
+    stroke="#888C8C"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="m7.5 4.27 9 5.15" />
+    <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+    <path d="M3.3 7 12 12l8.7-5" />
+    <path d="M12 22V12" />
+  </g>
+  <text
+    x="200"
+    y="300"
+    text-anchor="middle"
+    font-family="'Amazon Ember', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+    font-size="22"
+    font-weight="600"
+    fill="#565959"
+  >
+    Image coming soon
+  </text>
+</svg>

@@ -1,0 +1,29 @@
+# Amazon Edge-Return — backend dependencies (pinned)
+# Web framework + ASGI server
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+
+# Relational store (async)
+sqlalchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+
+# Geospatial demand index
+redis==5.2.1
+
+# Validation + settings
+pydantic==2.10.4
+pydantic-settings==2.7.1
+
+# Multipart form parsing (product image uploads)
+python-multipart==0.0.20
+
+# Auth / signed session cookies
+passlib[bcrypt]==1.7.4
+bcrypt==4.2.1
+itsdangerous==2.2.0
+
+# Testing
+hypothesis==6.122.3
+pytest==8.3.4
+pytest-asyncio==0.25.0
+httpx==0.28.1

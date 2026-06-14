@@ -1,0 +1,37 @@
+[project]
+name = "amazon-edge-return-backend"
+version = "0.1.0"
+description = "FastAPI backend for the Amazon Edge-Return prototype (decentralized return intercept + resale)."
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.115.6",
+    "uvicorn[standard]==0.34.0",
+    "sqlalchemy[asyncio]==2.0.36",
+    "asyncpg==0.30.0",
+    "redis==5.2.1",
+    "pydantic==2.10.4",
+    "pydantic-settings==2.7.1",
+    "passlib[bcrypt]==1.7.4",
+    "bcrypt==4.2.1",
+    "itsdangerous==2.2.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "hypothesis==6.122.3",
+    "pytest==8.3.4",
+    "pytest-asyncio==0.25.0",
+    "httpx==0.28.1",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["app"]

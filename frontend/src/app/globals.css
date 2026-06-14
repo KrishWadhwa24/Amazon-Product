@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --amazon-ink: #0f1111;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  /* Customer-facing background + high-contrast body text (Req 17.1, 17.4). */
+  background-color: #eaeded;
+  color: var(--amazon-ink);
+  font-family:
+    "Amazon Ember", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}

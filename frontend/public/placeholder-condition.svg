@@ -1,0 +1,54 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="400"
+  height="400"
+  viewBox="0 0 400 400"
+  role="img"
+  aria-label="Live photo captured"
+>
+  <rect width="400" height="400" rx="8" fill="#0F1111" />
+  <rect
+    x="0.5"
+    y="0.5"
+    width="399"
+    height="399"
+    rx="8"
+    fill="none"
+    stroke="#3A4553"
+    stroke-width="1"
+  />
+  <!-- Lucide-style "camera" icon, centered -->
+  <g
+    transform="translate(150 110) scale(4.16667)"
+    fill="none"
+    stroke="#FF9900"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+    <circle cx="12" cy="13" r="3" />
+  </g>
+  <text
+    x="200"
+    y="300"
+    text-anchor="middle"
+    font-family="'Amazon Ember', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+    font-size="22"
+    font-weight="600"
+    fill="#FF9900"
+  >
+    Live photo captured
+  </text>
+  <text
+    x="200"
+    y="334"
+    text-anchor="middle"
+    font-family="'Amazon Ember', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+    font-size="15"
+    font-weight="400"
+    fill="#AAB1B8"
+  >
+    Mock AI condition capture
+  </text>
+</svg>

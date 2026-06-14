@@ -1,0 +1,332 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Design tokens — snapshots > matches the NavBar snapshot 1`] = `
+<header
+  class="w-full"
+>
+  <div
+    class="bg-amazonNavy text-white"
+  >
+    <div
+      class="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-2"
+    >
+      <div
+        class="flex shrink-0 items-center gap-3"
+      >
+        <a
+          class="rounded px-1 text-2xl font-black tracking-normal hover:outline hover:outline-1 hover:outline-white"
+          href="/"
+        >
+          <span>
+            amazon
+          </span>
+          <span
+            class="text-amazonOrange"
+          >
+            .edge
+          </span>
+        </a>
+        <a
+          class="hidden items-center gap-2 rounded-amazon border border-amazonOrange/60 bg-white/10 px-3 py-1.5 text-sm font-bold text-white shadow-sm hover:bg-white/15 lg:flex"
+          href="/local-marketplace"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-store h-4 w-4 text-amazonOrange"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"
+            />
+            <path
+              d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"
+            />
+            <path
+              d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"
+            />
+            <path
+              d="M2 7h20"
+            />
+            <path
+              d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"
+            />
+          </svg>
+          Local Marketplace
+        </a>
+      </div>
+      <button
+        class="hidden items-center gap-1 rounded px-1 text-left hover:outline hover:outline-1 hover:outline-white sm:flex"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-map-pin h-4 w-4 text-white"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"
+          />
+          <circle
+            cx="12"
+            cy="10"
+            r="3"
+          />
+        </svg>
+        <span
+          class="leading-tight"
+        >
+          <span
+            class="block text-xs text-gray-300"
+          >
+            Deliver to
+          </span>
+          <span
+            class="block text-sm font-bold"
+          >
+            Bengaluru
+          </span>
+        </span>
+      </button>
+      <form
+        action="/"
+        class="flex min-w-0 flex-1 items-stretch overflow-hidden rounded-amazon"
+        role="search"
+      >
+        <input
+          aria-label="Search Amazon Edge-Return"
+          class="min-w-0 flex-1 px-3 py-2 text-sm text-amazonInk focus:outline-none"
+          placeholder="Search products"
+          type="search"
+        />
+        <button
+          aria-label="Search"
+          class="flex items-center justify-center bg-amazonOrange px-3 text-amazonInk hover:brightness-95"
+          type="submit"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-search h-5 w-5"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="11"
+              cy="11"
+              r="8"
+            />
+            <path
+              d="m21 21-4.3-4.3"
+            />
+          </svg>
+        </button>
+      </form>
+      <a
+        class="hidden items-center gap-1 rounded px-1 hover:outline hover:outline-1 hover:outline-white sm:flex"
+        href="/login"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-user h-4 w-4"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"
+          />
+          <circle
+            cx="12"
+            cy="7"
+            r="4"
+          />
+        </svg>
+        <span
+          class="leading-tight"
+        >
+          <span
+            class="block text-xs text-gray-300"
+          >
+            Loading…
+          </span>
+          <span
+            class="block text-sm font-bold"
+          >
+            Account & Lists
+          </span>
+        </span>
+      </a>
+      <a
+        aria-label="Cart"
+        class="flex items-center gap-1 rounded px-1 hover:outline hover:outline-1 hover:outline-white"
+        href="/cart"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-shopping-cart h-6 w-6"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            cx="8"
+            cy="21"
+            r="1"
+          />
+          <circle
+            cx="19"
+            cy="21"
+            r="1"
+          />
+          <path
+            d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"
+          />
+        </svg>
+        <span
+          class="hidden text-sm font-bold sm:inline"
+        >
+          Cart
+        </span>
+      </a>
+    </div>
+  </div>
+  <nav
+    class="border-t border-white/10 bg-amazonDark text-white"
+  >
+    <ul
+      class="mx-auto flex w-full max-w-7xl items-center gap-3 overflow-x-auto px-4 py-2 text-sm"
+    >
+      <li
+        class="whitespace-nowrap"
+      >
+        <a
+          class="inline-flex items-center gap-2 rounded-amazon bg-amazonOrange px-3 py-1.5 text-sm font-extrabold text-amazonInk shadow-sm hover:brightness-95"
+          href="/local-marketplace"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-sparkles h-4 w-4"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"
+            />
+            <path
+              d="M20 3v4"
+            />
+            <path
+              d="M22 5h-4"
+            />
+            <path
+              d="M4 17v2"
+            />
+            <path
+              d="M5 18H3"
+            />
+          </svg>
+          Local Marketplace
+        </a>
+      </li>
+      <li
+        class="whitespace-nowrap"
+      >
+        <span
+          class="cursor-pointer rounded px-2 py-1 font-medium hover:outline hover:outline-1 hover:outline-white"
+        >
+          Today's Deals
+        </span>
+      </li>
+      <li
+        class="whitespace-nowrap"
+      >
+        <a
+          class="cursor-pointer rounded px-2 py-1 font-medium hover:outline hover:outline-1 hover:outline-white"
+          href="/local-deals"
+        >
+          Local Deals
+        </a>
+      </li>
+      <li
+        class="whitespace-nowrap"
+      >
+        <a
+          class="cursor-pointer rounded px-2 py-1 font-medium hover:outline hover:outline-1 hover:outline-white"
+          href="/local-marketplace"
+        >
+          Resale Marketplace
+        </a>
+      </li>
+      <li
+        class="whitespace-nowrap"
+      >
+        <a
+          class="cursor-pointer rounded px-2 py-1 font-medium hover:outline hover:outline-1 hover:outline-white"
+          href="/orders"
+        >
+          Returns & Orders
+        </a>
+      </li>
+      <li
+        class="whitespace-nowrap"
+      >
+        <span
+          class="cursor-pointer rounded px-2 py-1 font-medium hover:outline hover:outline-1 hover:outline-white"
+        >
+          Operations
+        </span>
+      </li>
+    </ul>
+  </nav>
+</header>
+`;
+
+exports[`Design tokens — snapshots > matches the PrimaryButton snapshot 1`] = `
+<button
+  class="inline-flex w-full items-center justify-center rounded-amazon bg-amazon-button border border-[#a88734]/60 px-4 py-2 text-sm font-medium text-amazonInk shadow-sm transition-[filter] hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-amazonOrange disabled:cursor-not-allowed disabled:opacity-60 "
+  type="button"
+>
+  Add to Cart
+</button>
+`;
